@@ -10,17 +10,20 @@ class Boundary
     static width = 40;
     static height = 40;
 
-    constructor({position})
+    constructor({position, image})
     {
         this.position = position;
         this.width = 40;
         this.height = 40;
+        this.image = image;
     }
 
     draw()
     {
         c.fillStyle = 'blue';
-        c.fillRect(this.position.x, this.position.y, this.width, this.height);
+        //c.fillRect(this.position.x, this.position.y, this.width, this.height);
+        console.log(this.image);
+        c.drawImage(this.image, this.position.x, this.position.y);
     }
 }
 
@@ -71,53 +74,327 @@ const keys = {
 let last_key = '';
 
 const map = [
-    ['-', '-', '-', '-', '-', '-', ],
-    ['-', ' ', ' ', ' ', ' ', '-', ],
-    ['-', ' ', '-', '-', ' ', '-', ],
-    ['-', ' ', ' ', ' ', ' ', '-', ],
-    ['-', '-', '-', '-', '-', '-', ],
-];
+    ['1', '-', '-', '-', '-', '-', '-', '-', '-', '-', '2'],
+    ['|', '.', '.', '.', '.', '.', '.', '.', '.', '.', '|'],
+    ['|', '.', 'b', '.', '[', '7', ']', '.', 'b', '.', '|'],
+    ['|', '.', '.', '.', '.', '_', '.', '.', '.', '.', '|'],
+    ['|', '.', '[', ']', '.', '.', '.', '[', ']', '.', '|'],
+    ['|', '.', '.', '.', '.', '^', '.', '.', '.', '.', '|'],
+    ['|', '.', 'b', '.', '[', '+', ']', '.', 'b', '.', '|'],
+    ['|', '.', '.', '.', '.', '_', '.', '.', '.', '.', '|'],
+    ['|', '.', '[', ']', '.', '.', '.', '[', ']', '.', '|'],
+    ['|', '.', '.', '.', '.', '^', '.', '.', '.', '.', '|'],
+    ['|', '.', 'b', '.', '[', '5', ']', '.', 'b', '.', '|'],
+    ['|', '.', '.', '.', '.', '.', '.', '.', '.', 'p', '|'],
+    ['4', '-', '-', '-', '-', '-', '-', '-', '-', '-', '3']
+  ]
 
-map.forEach(function(row, i){
-    row.forEach(function(symbol, j){
-        
-        switch(symbol)
-        {
-            case '-':
-                boundaries.push(new Boundary({position: {x: Boundary.width * j, y: Boundary.height * i}}))
-                break;
-        }
+function createImage(src)
+{
+    const image = new Image();
+    image.src = src;
 
-    });
-});
+    return image;
+}
+
+map.forEach((row, i) => {
+    row.forEach((symbol, j) => {
+      switch (symbol) {
+        case '-':
+          boundaries.push(
+            new Boundary({
+              position: {
+                x: Boundary.width * j,
+                y: Boundary.height * i
+              },
+              image: createImage('./img/pipeHorizontal.png')
+            })
+          )
+          break
+        case '|':
+          boundaries.push(
+            new Boundary({
+              position: {
+                x: Boundary.width * j,
+                y: Boundary.height * i
+              },
+              image: createImage('./img/pipeVertical.png')
+            })
+          )
+          break
+        case '1':
+          boundaries.push(
+            new Boundary({
+              position: {
+                x: Boundary.width * j,
+                y: Boundary.height * i
+              },
+              image: createImage('./img/pipeCorner1.png')
+            })
+          )
+          break
+        case '2':
+          boundaries.push(
+            new Boundary({
+              position: {
+                x: Boundary.width * j,
+                y: Boundary.height * i
+              },
+              image: createImage('./img/pipeCorner2.png')
+            })
+          )
+          break
+        case '3':
+          boundaries.push(
+            new Boundary({
+              position: {
+                x: Boundary.width * j,
+                y: Boundary.height * i
+              },
+              image: createImage('./img/pipeCorner3.png')
+            })
+          )
+          break
+        case '4':
+          boundaries.push(
+            new Boundary({
+              position: {
+                x: Boundary.width * j,
+                y: Boundary.height * i
+              },
+              image: createImage('./img/pipeCorner4.png')
+            })
+          )
+          break
+        case 'b':
+          boundaries.push(
+            new Boundary({
+              position: {
+                x: Boundary.width * j,
+                y: Boundary.height * i
+              },
+              image: createImage('./img/block.png')
+            })
+          )
+          break
+        case '[':
+          boundaries.push(
+            new Boundary({
+              position: {
+                x: j * Boundary.width,
+                y: i * Boundary.height
+              },
+              image: createImage('./img/capLeft.png')
+            })
+          )
+          break
+        case ']':
+          boundaries.push(
+            new Boundary({
+              position: {
+                x: j * Boundary.width,
+                y: i * Boundary.height
+              },
+              image: createImage('./img/capRight.png')
+            })
+          )
+          break
+        case '_':
+          boundaries.push(
+            new Boundary({
+              position: {
+                x: j * Boundary.width,
+                y: i * Boundary.height
+              },
+              image: createImage('./img/capBottom.png')
+            })
+          )
+          break
+        case '^':
+          boundaries.push(
+            new Boundary({
+              position: {
+                x: j * Boundary.width,
+                y: i * Boundary.height
+              },
+              image: createImage('./img/capTop.png')
+            })
+          )
+          break
+        case '+':
+          boundaries.push(
+            new Boundary({
+              position: {
+                x: j * Boundary.width,
+                y: i * Boundary.height
+              },
+              image: createImage('./img/pipeCross.png')
+            })
+          )
+          break
+        case '5':
+          boundaries.push(
+            new Boundary({
+              position: {
+                x: j * Boundary.width,
+                y: i * Boundary.height
+              },
+              color: 'blue',
+              image: createImage('./img/pipeConnectorTop.png')
+            })
+          )
+          break
+        case '6':
+          boundaries.push(
+            new Boundary({
+              position: {
+                x: j * Boundary.width,
+                y: i * Boundary.height
+              },
+              color: 'blue',
+              image: createImage('./img/pipeConnectorRight.png')
+            })
+          )
+          break
+        case '7':
+          boundaries.push(
+            new Boundary({
+              position: {
+                x: j * Boundary.width,
+                y: i * Boundary.height
+              },
+              color: 'blue',
+              image: createImage('./img/pipeConnectorBottom.png')
+            })
+          )
+          break
+        case '8':
+          boundaries.push(
+            new Boundary({
+              position: {
+                x: j * Boundary.width,
+                y: i * Boundary.height
+              },
+              image: createImage('./img/pipeConnectorLeft.png')
+            })
+          )
+          break
+        /*case '.':
+            boundaries.push(
+            new Boundary({
+              position: {
+                x: j * Boundary.width + Boundary.width / 2,
+                y: i * Boundary.height + Boundary.height / 2
+              }
+            })
+          )
+          break*/
+      }
+    })
+  })
+
+function circleCollideWithRectangle({circle, rectangle})
+{
+    return circle.position.y - circle.radius + circle.velocity.y <= rectangle.position.y + rectangle.height
+    && circle.position.x + circle.radius + circle.velocity.x >= rectangle.position.x
+    && circle.position.y + circle.radius + circle.velocity.y >= rectangle.position.y
+    && circle.position.x - circle.radius + circle.velocity.x <= rectangle.position.x + rectangle.width 
+}
 
 function animate()
 {
     requestAnimationFrame(animate);
     c.clearRect(0, 0, window.innerWidth, window.innerHeight);
-
-    boundaries.forEach(function(boundary){
-        boundary.draw();
-    });
-    player.update();
-    player.velocity = {x: 0, y: 0};
+    
 
     if(keys.w.pressed && last_key == 'w')
     {
-        player.velocity.y = -5;
+        for(let i = 0; i < boundaries.length; i++)
+        {
+            let boundary = boundaries[i];
+
+            if(circleCollideWithRectangle({
+                circle: {...player, velocity:{
+                    x: 0,
+                    y: -5
+                }}, rectangle: boundary
+            }))
+            {
+                player.velocity.y = 0;
+                break
+            }
+            else player.velocity.y = -5;
+        }
+        
     }
     else if(keys.a.pressed && last_key == 'a')
     {
-        player.velocity.x = -5;
+        for(let i = 0; i < boundaries.length; i++)
+        {
+            let boundary = boundaries[i];
+
+            if(circleCollideWithRectangle({
+                circle: {...player, velocity:{
+                    x: -5,
+                    y: 0
+                }}, rectangle: boundary
+            }))
+            {
+                player.velocity.x = 0;
+                break
+            }
+            else player.velocity.x = -5;
+        }
     }
     else if(keys.s.pressed && last_key == 's')
     {
-        player.velocity.y = 5;
+        for(let i = 0; i < boundaries.length; i++)
+        {
+            let boundary = boundaries[i];
+
+            if(circleCollideWithRectangle({
+                circle: {...player, velocity:{
+                    x: 0,
+                    y: 5
+                }}, rectangle: boundary
+            }))
+            {
+                player.velocity.y = 0;
+                break
+            }
+            else player.velocity.y = 5;
+        }
     }
     else if(keys.d.pressed && last_key == 'd')
     {
-        player.velocity.x = 5;
+        for(let i = 0; i < boundaries.length; i++)
+        {
+            let boundary = boundaries[i];
+
+            if(circleCollideWithRectangle({
+                circle: {...player, velocity:{
+                    x: 5,
+                    y: 0
+                }}, rectangle: boundary
+            }))
+            {
+                player.velocity.x = 0;
+                break
+            }
+            else player.velocity.x = 5;
+        }
     }
+
+    boundaries.forEach(function(boundary){
+        boundary.draw();
+
+        if(circleCollideWithRectangle({circle: player, rectangle: boundary}))
+        {
+            console.log('collision');
+            player.velocity = {x: 0, y: 0};
+        }
+    });
+    player.update();
 }
 
 animate()
@@ -145,7 +422,7 @@ window.addEventListener('keydown', function({key}){
             break;
     }
 
-    console.log(keys);
+    //console.log(keys);
 });
 
 window.addEventListener('keyup', function({key}){
@@ -166,5 +443,5 @@ window.addEventListener('keyup', function({key}){
             break;
     }
 
-    console.log(keys);
+    //console.log(keys);
 });
