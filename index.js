@@ -22,7 +22,7 @@ class Boundary
     {
         c.fillStyle = 'blue';
         //c.fillRect(this.position.x, this.position.y, this.width, this.height);
-        console.log(this.image);
+       // console.log(this.image);
         c.drawImage(this.image, this.position.x, this.position.y);
     }
 }
@@ -53,6 +53,25 @@ class Player
     }
 }
 
+class Pellet
+{
+    constructor({position})
+    {
+        this.position = position;
+        this.radius = 3;
+    }
+
+    draw()
+    {
+        c.beginPath();
+        c.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2);
+        c.fillStyle = 'white';
+        c.fill();
+        c.closePath();
+    }
+}
+
+const pellets = [];
 const boundaries = [];
 const player = new Player({position: {x: Boundary.width*1.5, y: Boundary.height*1.5}, velocity: {x: 0, y: 0}});
 
@@ -279,16 +298,17 @@ map.forEach((row, i) => {
             })
           )
           break
-        /*case '.':
-            boundaries.push(
-            new Boundary({
-              position: {
-                x: j * Boundary.width + Boundary.width / 2,
-                y: i * Boundary.height + Boundary.height / 2
-              }
-            })
-          )
-          break*/
+        case '.':
+            pellets.push(
+              new Pellet({
+                position: {
+                  x: j * Boundary.width + Boundary.width/2,
+                  y: i * Boundary.height + Boundary.height/2
+                },
+                image: createImage('./img/pipeConnectorLeft.png')
+              })
+            );
+            break
       }
     })
   })
@@ -384,6 +404,23 @@ function animate()
             else player.velocity.x = 5;
         }
     }
+
+    for(let i = pellets.length-1; i > 0; i--)
+    {
+        const pellet = pellets[i];
+
+        pellet.draw();
+
+        if(Math.hypot(pellet.position.x - player.position.x, pellet.position.y - player.position.y) < pellet.radius + player.radius)
+        {
+          console.log('trigger');
+          pellets.splice(i, 1);
+        }
+    }
+
+    /*pellets.forEach(function(pellet, i){
+      
+    });*/
 
     boundaries.forEach(function(boundary){
         boundary.draw();
