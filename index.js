@@ -1,5 +1,6 @@
 const canvas = document.querySelector('canvas');
 const c = canvas.getContext('2d');
+const scoreEl = document.querySelector("#scoreEl");
 
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
@@ -91,6 +92,7 @@ const keys = {
 };
 
 let last_key = '';
+let score = 0;
 
 const map = [
     ['1', '-', '-', '-', '-', '-', '-', '-', '-', '-', '2'],
@@ -405,6 +407,7 @@ function animate()
         }
     }
 
+    //touch the pellets
     for(let i = pellets.length-1; i > 0; i--)
     {
         const pellet = pellets[i];
@@ -413,8 +416,10 @@ function animate()
 
         if(Math.hypot(pellet.position.x - player.position.x, pellet.position.y - player.position.y) < pellet.radius + player.radius)
         {
-          console.log('trigger');
-          pellets.splice(i, 1);
+            //console.log('trigger');
+            score += 10;
+            scoreEl.innerHTML = score;
+            pellets.splice(i, 1);
         }
     }
 
