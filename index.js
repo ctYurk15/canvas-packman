@@ -109,6 +109,11 @@ const ghosts = [
     position: {x: Boundary.width*6 + Boundary.width/2, y: Boundary.height*1.5},
     velocity: {x: Ghost.speed, y: 0}
   }),
+  new Ghost({
+    position: {x: Boundary.width*6 + Boundary.width/2, y: Boundary.height*3 + Boundary.height/2},
+    velocity: {x: Ghost.speed, y: 0},
+    color: 'pink'
+  }),
 ];
 const player = new Player({position: {x: Boundary.width*1.5, y: Boundary.height*1.5}, velocity: {x: 0, y: 0}});
 
@@ -360,9 +365,10 @@ function circleCollideWithRectangle({circle, rectangle})
     && circle.position.x - circle.radius + circle.velocity.x <= rectangle.position.x + rectangle.width  + padding
 }
 
+let animation_id;
 function animate()
 {
-    requestAnimationFrame(animate);
+    animation_id = requestAnimationFrame(animate);
     c.clearRect(0, 0, window.innerWidth, window.innerHeight);
     
 
@@ -472,6 +478,12 @@ function animate()
 
     ghosts.forEach(function(ghost){
       ghost.update();
+
+      if(Math.hypot(ghost.position.x - player.position.x, ghost.position.y - player.position.y) < ghost.radius + player.radius)
+      {
+          alert('Game over!');
+          cancelAnimationFrame(animation_id);
+      }
 
       const collisions = [];
       boundaries.forEach(function(boundary){
