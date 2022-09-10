@@ -54,6 +54,36 @@ class Player
     }
 }
 
+class Ghost
+{
+    static speed = 2;
+    constructor({position, velocity, color = 'red'})
+    {
+        this.position = position;
+        this.velocity = velocity;
+        this.color = color;
+        this.radius = 15;
+        this.speed = 2;
+        this.prevCollisions = [];
+    }
+
+    draw()
+    {
+        c.beginPath();
+        c.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2);
+        c.fillStyle = this.color;
+        c.fill();
+        c.closePath();
+    }
+
+    update()
+    {
+        this.draw();
+        this.position.x += this.velocity.x;
+        this.position.y += this.velocity.y;
+    }
+}
+
 class Pellet
 {
     constructor({position})
@@ -74,6 +104,12 @@ class Pellet
 
 const pellets = [];
 const boundaries = [];
+const ghosts = [
+  new Ghost({
+    position: {x: Boundary.width*6 + Boundary.width/2, y: Boundary.height*1.5},
+    velocity: {x: Ghost.speed, y: 0}
+  }),
+];
 const player = new Player({position: {x: Boundary.width*1.5, y: Boundary.height*1.5}, velocity: {x: 0, y: 0}});
 
 const keys = {
@@ -317,10 +353,11 @@ map.forEach((row, i) => {
 
 function circleCollideWithRectangle({circle, rectangle})
 {
-    return circle.position.y - circle.radius + circle.velocity.y <= rectangle.position.y + rectangle.height
-    && circle.position.x + circle.radius + circle.velocity.x >= rectangle.position.x
-    && circle.position.y + circle.radius + circle.velocity.y >= rectangle.position.y
-    && circle.position.x - circle.radius + circle.velocity.x <= rectangle.position.x + rectangle.width 
+    const padding = Boundary.width / 2 - circle.radius - 1;
+    return circle.position.y - circle.radius + circle.velocity.y <= rectangle.position.y + rectangle.height + padding
+    && circle.position.x + circle.radius + circle.velocity.x >= rectangle.position.x - padding
+    && circle.position.y + circle.radius + circle.velocity.y >= rectangle.position.y - padding
+    && circle.position.x - circle.radius + circle.velocity.x <= rectangle.position.x + rectangle.width  + padding
 }
 
 function animate()
@@ -423,10 +460,6 @@ function animate()
         }
     }
 
-    /*pellets.forEach(function(pellet, i){
-      
-    });*/
-
     boundaries.forEach(function(boundary){
         boundary.draw();
 
@@ -436,6 +469,124 @@ function animate()
             player.velocity = {x: 0, y: 0};
         }
     });
+
+    ghosts.forEach(function(ghost){
+      ghost.update();
+
+      const collisions = [];
+      boundaries.forEach(function(boundary){
+          
+        if(!collisions.includes('right') && circleCollideWithRectangle({
+          circle: {...ghost, velocity:{
+              x: ghost.speed,
+              y: 0
+          }}, rectangle: boundary
+        }))
+        {
+            //player.velocity.y = 0;
+            collisions.push('right');
+        }
+
+        if(!collisions.includes('left') && circleCollideWithRectangle({
+          circle: {...ghost, velocity:{
+              x: -ghost.speed,
+              y: 0
+          }}, rectangle: boundary
+        }))
+        {
+            //player.velocity.y = 0;
+            collisions.push('left');
+        }
+
+        if(!collisions.includes('up') && circleCollideWithRectangle({
+          circle: {...ghost, velocity:{
+              x: 0,
+              y: -ghost.speed
+          }}, rectangle: boundary
+        }))
+        {
+            //player.velocity.y = 0;
+            collisions.push('up');
+        }
+
+        if(!collisions.includes('down') && circleCollideWithRectangle({
+          circle: {...ghost, velocity:{
+              x: 0,
+              y: ghost.speed
+          }}, rectangle: boundary
+        }))
+        {
+            //player.velocity.y = 0;
+            collisions.push('down');
+        }
+
+      });
+      
+      if(collisions.length > ghost.prevCollisions.length)
+      {
+          ghost.prevCollisions = collisions;
+      }
+
+      if(JSON.stringify(collisions) !== JSON.stringify(ghost.prevCollisions))
+      {
+          //ghost.prevCollisions = collisions;
+
+          if(ghost.velocity.x > 0)
+          {
+              ghost.prevCollisions.push('right');
+          }
+          else if(ghost.velocity.x < 0)
+          {
+              ghost.prevCollisions.push('left');
+          }
+          else if(ghost.velocity.y > 0)
+          {
+              ghost.prevCollisions.push('down');
+          }
+          else if(ghost.velocity.y < 0)
+          {
+              ghost.prevCollisions.push('up');
+          }
+
+         /* console.log('down1');
+          console.log(collisions);
+          console.log(ghost.prevCollisions);*/
+
+          const pathways = ghost.prevCollisions.filter(function(collision){
+            return !collisions.includes(collision);
+          });
+          //console.log(pathways, 'path');
+
+          const direction = pathways[Math.floor(Math.random() * pathways.length)];
+          console.log('Moving there', direction);
+
+          switch(direction)
+          {
+              case 'down':
+                ghost.velocity.y = ghost.speed;
+                ghost.velocity.x = 0;
+                break;
+              case 'up':
+                  ghost.velocity.y = -ghost.speed;
+                  ghost.velocity.x = 0;
+                  break;
+              case 'right':
+                ghost.velocity.y = 0;
+                ghost.velocity.x = ghost.speed;
+                break;
+              case 'left':
+                  ghost.velocity.y = 0;
+                  ghost.velocity.x = -ghost.speed;
+                  break;
+          }
+
+          ghost.prevCollisions = [];
+      }
+
+      console.log(collisions);
+
+    });
+
     player.update();
 }
 
