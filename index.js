@@ -35,15 +35,30 @@ class Player
         this.position = position;
         this.velocity = velocity;
         this.radius = 15;
+        this.radians = 0.75;
+        this.open_rate = 0.12;
+        this.rotation = 0;
     }
 
     draw()
     {
+        c.save();
+        c.translate(this.position.x, this.position.y);
+        c.rotate(this.rotation);
+        c.translate(-this.position.x, -this.position.y);
         c.beginPath();
-        c.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2);
+        c.arc(
+          this.position.x, 
+          this.position.y, 
+          this.radius, 
+          this.radians, 
+          Math.PI * 2 - this.radians
+        );
+        c.lineTo(this.position.x, this.position.y);
         c.fillStyle = 'yellow';
         c.fill();
         c.closePath();
+        c.restore();
     }
 
     update()
@@ -51,6 +66,13 @@ class Player
         this.draw();
         this.position.x += this.velocity.x;
         this.position.y += this.velocity.y;
+
+        if(this.radians <= 0 || this.radians >= 0.75)
+        {
+          this.open_rate = -this.open_rate;
+        }
+
+        this.radians += this.open_rate;
     }
 }
 
@@ -622,7 +644,7 @@ function animate()
           //console.log(pathways, 'path');
 
           const direction = pathways[Math.floor(Math.random() * pathways.length)];
-          console.log('Moving there', direction);
+          //console.log('Moving there', direction);
 
           switch(direction)
           {
@@ -647,7 +669,14 @@ function animate()
           ghost.prevCollisions = [];
       }
 
-      console.log(collisions);
+      //console.log(collisions);
+    }
+
+    //win condition
+    if(pellets.length == 0)
+    {
+        alert('You won!');
+        cancelAnimationFrame(animation_id);
     }
 
     boundaries.forEach(function(boundary){
@@ -655,17 +684,22 @@ function animate()
 
         if(circleCollideWithRectangle({circle: player, rectangle: boundary}))
         {
-            console.log('collision');
+            //console.log('collision');
             player.velocity = {x: 0, y: 0};
         }
     });
 
-    ghosts.forEach(function(ghost){
+    /*ghosts.forEach(function(ghost){
       
 
-    });
+    });*/
 
     player.update();
+
+    if(player.velocity.x > 0) player.rotation = 0;
+    else if(player.velocity.x < 0) player.rotation = Math.PI;
+    else if(player.velocity.y > 0) player.rotation = Math.PI / 2;
+    else if(player.velocity.y < 0) player.rotation = Math.PI * 1.5;
 }
 
 animate()
