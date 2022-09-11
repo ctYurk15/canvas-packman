@@ -5,144 +5,6 @@ const scoreEl = document.querySelector("#scoreEl");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-class Boundary
-{
-
-    static width = 40;
-    static height = 40;
-
-    constructor({position, image})
-    {
-        this.position = position;
-        this.width = 40;
-        this.height = 40;
-        this.image = image;
-    }
-
-    draw()
-    {
-        c.fillStyle = 'blue';
-        //c.fillRect(this.position.x, this.position.y, this.width, this.height);
-       // console.log(this.image);
-        c.drawImage(this.image, this.position.x, this.position.y);
-    }
-}
-
-class Player
-{
-    constructor({position, velocity})
-    {
-        this.position = position;
-        this.velocity = velocity;
-        this.radius = 15;
-        this.radians = 0.75;
-        this.open_rate = 0.12;
-        this.rotation = 0;
-    }
-
-    draw()
-    {
-        c.save();
-        c.translate(this.position.x, this.position.y);
-        c.rotate(this.rotation);
-        c.translate(-this.position.x, -this.position.y);
-        c.beginPath();
-        c.arc(
-          this.position.x, 
-          this.position.y, 
-          this.radius, 
-          this.radians, 
-          Math.PI * 2 - this.radians
-        );
-        c.lineTo(this.position.x, this.position.y);
-        c.fillStyle = 'yellow';
-        c.fill();
-        c.closePath();
-        c.restore();
-    }
-
-    update()
-    {
-        this.draw();
-        this.position.x += this.velocity.x;
-        this.position.y += this.velocity.y;
-
-        if(this.radians <= 0 || this.radians >= 0.75)
-        {
-          this.open_rate = -this.open_rate;
-        }
-
-        this.radians += this.open_rate;
-    }
-}
-
-class Ghost
-{
-    static speed = 2;
-    constructor({position, velocity, color = 'red'})
-    {
-        this.position = position;
-        this.velocity = velocity;
-        this.color = color;
-        this.radius = 15;
-        this.speed = 2;
-        this.scared = false;
-        this.prevCollisions = [];
-    }
-
-    draw()
-    {
-        c.beginPath();
-        c.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2);
-        c.fillStyle = this.scared ? 'blue' : this.color;
-        c.fill();
-        c.closePath();
-    }
-
-    update()
-    {
-        this.draw();
-        this.position.x += this.velocity.x;
-        this.position.y += this.velocity.y;
-    }
-}
-
-class Pellet
-{
-    constructor({position})
-    {
-        this.position = position;
-        this.radius = 3;
-    }
-
-    draw()
-    {
-        c.beginPath();
-        c.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2);
-        c.fillStyle = 'white';
-        c.fill();
-        c.closePath();
-    }
-}
-
-class PowerUp
-{
-    constructor({position})
-    {
-        this.position = position;
-        this.radius = 8;
-    }
-
-    draw()
-    {
-        c.beginPath();
-        c.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2);
-        c.fillStyle = 'white';
-        c.fill();
-        c.closePath();
-    }
-}
-
 const pellets = [];
 const boundaries = [];
 const powerUps = [];
@@ -155,6 +17,16 @@ const ghosts = [
     position: {x: Boundary.width*6 + Boundary.width/2, y: Boundary.height*3 + Boundary.height/2},
     velocity: {x: Ghost.speed, y: 0},
     color: 'pink'
+  }),
+  new Ghost({
+    position: {x: Boundary.width*8 + Boundary.width/2, y: Boundary.height*5 + Boundary.height/2},
+    velocity: {x: Ghost.speed, y: 0},
+    color: 'green'
+  }),
+  new Ghost({
+    position: {x: Boundary.width*8 + Boundary.width/2, y: Boundary.height*9 + Boundary.height/2},
+    velocity: {x: Ghost.speed, y: 0},
+    color: 'yellow'
   }),
 ];
 const player = new Player({position: {x: Boundary.width*1.5, y: Boundary.height*1.5}, velocity: {x: 0, y: 0}});
@@ -179,17 +51,17 @@ let score = 0;
 
 const map = [
     ['1', '-', '-', '-', '-', '-', '-', '-', '-', '-', '2'],
-    ['|', '.', '.', '.', '.', '.', '.', '.', '.', '.', '|'],
+    ['|', ' ', '.', '.', '.', '.', '.', '.', '.', '.', '|'],
     ['|', '.', 'b', '.', '[', '7', ']', '.', 'b', '.', '|'],
     ['|', '.', '.', '.', '.', '_', '.', '.', '.', '.', '|'],
     ['|', '.', '[', ']', '.', '.', '.', '[', ']', '.', '|'],
-    ['|', '.', '.', '.', '.', '^', '.', '.', '.', '.', '|'],
+    ['|', '.', '.', '.', 'p', '^', 'p', '.', '.', '.', '|'],
     ['|', '.', 'b', '.', '[', '+', ']', '.', 'b', '.', '|'],
-    ['|', '.', '.', '.', '.', '_', '.', '.', '.', '.', '|'],
+    ['|', '.', '.', '.', 'p', '_', 'p', '.', '.', '.', '|'],
     ['|', '.', '[', ']', '.', '.', '.', '[', ']', '.', '|'],
     ['|', '.', '.', '.', '.', '^', '.', '.', '.', '.', '|'],
     ['|', '.', 'b', '.', '[', '5', ']', '.', 'b', '.', '|'],
-    ['|', '.', '.', '.', '.', '.', '.', '.', '.', 'p', '|'],
+    ['|', '.', '.', '.', '.', '.', '.', '.', '.', '.', '|'],
     ['4', '-', '-', '-', '-', '-', '-', '-', '-', '-', '3']
   ]
 
