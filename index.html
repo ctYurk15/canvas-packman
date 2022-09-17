@@ -5,7 +5,14 @@
         <link href="index.css" rel="stylesheet">
     </head>
     <body>
-        <p style="color: white; font-family: sans-serif; font-size: 14px; margin-bottom: 6px;"> 
+        <div class="ui-element" id="menuModal">
+            <h1>Canvas-packman</h1>
+            <h2 class="hidden" id="gameOverContainer">
+                Game over! Scores: <span id="gameOverScores">0</span>
+            </h1>
+            <button id="startGameBtn">Start</button>
+        </div>
+        <p class="scores-text hidden"> 
             <span>Score:</span> <span id="scoreEl">0</span>
         </p>
         <canvas></canvas>
@@ -14,6 +21,11 @@
         <script src="scripts/objects/pellet.js"></script>
         <script src="scripts/objects/player.js"></script>
         <script src="scripts/objects/powerup.js"></script>
+        <script src="scripts/objects/map.js"></script>
+
+        <script src="scripts/uimanager.js"></script>
+        <script src="scripts/gamemap.js"></script>
+        
         <script src="scripts/index.js"></script>
     </body>
 </html>
