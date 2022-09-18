@@ -6,6 +6,12 @@ body
     background-color: black;
 }
 
+canvas
+{
+    width: 90%;
+    height: 90vh;
+}
+
 .hidden
 {
     display: none !important;
@@ -25,7 +31,7 @@ body
     display: grid;
     width: 40%;
     height: 40vh;
-    left: 20%;
+    left: 30%;
     border: 5px solid blue;
     border-radius: 7px;
     color: white;

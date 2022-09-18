@@ -7,8 +7,8 @@ const scores_container = document.querySelector(".scores-text");
 const game_over_container = document.querySelector("#gameOverContainer");
 const game_over_scores = document.querySelector("#gameOverScores");
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+canvas.width = window.innerWidth*1.05;
+canvas.height = window.innerHeight*1.05;
 
 const ui_manager = new UIManager(scoreEl, scores_container, menu_modal, game_over_container, game_over_scores);
 
