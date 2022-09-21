@@ -1,12 +1,21 @@
 class Map
 {
-    constructor(game_map)
+    constructor(game_map, powerup_textures)
     {
         this.game_map = game_map;
+        this.powerup_textures = powerup_textures;
+    }
+
+    getPowerupTexture()
+    {
+        let index = parseInt(Math.random()*this.powerup_textures.length);
+        return this.powerup_textures[index];
     }
 
     parse(boundaries, pellets, powerUps)
     {
+        const self = this; 
+
         this.game_map.forEach((row, i) => {
             row.forEach((symbol, j) => {
                 
@@ -193,22 +202,23 @@ class Map
                         break
                     case '.':
                         pellets.push(
-                        new Pellet({
-                            position: {
-                            x: j * Boundary.width + Boundary.width/2,
-                            y: i * Boundary.height + Boundary.height/2
-                            },
-                        })
+                            new Pellet({
+                                position: {
+                                    x: j * Boundary.width + Boundary.width/2,
+                                    y: i * Boundary.height + Boundary.height/2
+                                }
+                            })
                         );
                         break
                     case 'p':
                         powerUps.push(
-                        new PowerUp({
-                            position: {
-                            x: j * Boundary.width + Boundary.width/2,
-                            y: i * Boundary.height + Boundary.height/2
-                            },
-                        })
+                            new PowerUp({
+                                position: {
+                                    x: j * Boundary.width + Boundary.width/2,
+                                    y: i * Boundary.height + Boundary.height/2
+                                },
+                                texture: createImage(self.getPowerupTexture())
+                            })
                         );
                         break
                 }

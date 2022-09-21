@@ -25,4 +25,8 @@ const gamemap = [
     ['|', '.', '.', '.', '.', '.', '.', '.', '.', '.', '|', '.', '.', '.', '.', '.', '.', '.', '.', '.', '|',],
     ['4', '-', '-', '-', '-', '-', '-', '-', '-', '-', '5', '-', '-', '-', '-', '-', '-', '-', '-', '-', '3',],
 ];
-const map = new Map(gamemap);
+const map = new Map(gamemap, [
+    './img/powerups/powerup1.png',
+    './img/powerups/powerup2.png',
+    './img/powerups/powerup3.png',
+]);
