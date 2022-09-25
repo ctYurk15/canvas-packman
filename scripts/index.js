@@ -1,3 +1,5 @@
+//https://www.spriters-resource.com/fullview/159361/
+
 const canvas = document.querySelector('canvas');
 const c = canvas.getContext('2d');
 const scoreEl = document.querySelector("#scoreEl");
@@ -37,36 +39,33 @@ const keys = {
 let last_key = '';
 let score = 0;
 
-function createImage(src)
-{
-    const image = new Image();
-    image.src = src;
-
-    return image;
-}
-
 function generateGhosts()
 {
   ghosts = [
 
     new Ghost({
       position: {x: Boundary.width*6 + Boundary.width/2, y: Boundary.height*1.5},
-      velocity: {x: Ghost.speed, y: 0}
+      velocity: {x: Ghost.speed, y: 0},
+      texture: createImage(texturer.getGhostTexture()),
+      scared_texture: scared_ghost_texture,
     }),
     new Ghost({
       position: {x: Boundary.width*6 + Boundary.width/2, y: Boundary.height*3 + Boundary.height/2},
       velocity: {x: Ghost.speed, y: 0},
-      color: 'pink'
+      texture: createImage(texturer.getGhostTexture()),
+      scared_texture: scared_ghost_texture,
     }),
     new Ghost({
       position: {x: Boundary.width*8 + Boundary.width/2, y: Boundary.height*5 + Boundary.height/2},
       velocity: {x: Ghost.speed, y: 0},
-      color: 'green'
+      texture: createImage(texturer.getGhostTexture()),
+      scared_texture: scared_ghost_texture,
     }),
     new Ghost({
       position: {x: Boundary.width*8 + Boundary.width/2, y: Boundary.height*9 + Boundary.height/2},
       velocity: {x: Ghost.speed, y: 0},
-      color: 'yellow'
+      texture: createImage(texturer.getGhostTexture()),
+      scared_texture: scared_ghost_texture,
     }),
 
   ];

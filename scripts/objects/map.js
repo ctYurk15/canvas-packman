@@ -1,15 +1,9 @@
 class Map
 {
-    constructor(game_map, powerup_textures)
+    constructor(game_map, texturer)
     {
         this.game_map = game_map;
-        this.powerup_textures = powerup_textures;
-    }
-
-    getPowerupTexture()
-    {
-        let index = parseInt(Math.random()*this.powerup_textures.length);
-        return this.powerup_textures[index];
+        this.texturer = texturer;
     }
 
     parse(boundaries, pellets, powerUps)
@@ -217,7 +211,7 @@ class Map
                                     x: j * Boundary.width + Boundary.width/2,
                                     y: i * Boundary.height + Boundary.height/2
                                 },
-                                texture: createImage(self.getPowerupTexture())
+                                texture: createImage(self.texturer.getPowerupTexture())
                             })
                         );
                         break
