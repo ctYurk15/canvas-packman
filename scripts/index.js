@@ -71,6 +71,13 @@ function generateGhosts()
   ];
 }
 
+function getRandomInt(min, max) 
+{
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
+}
+
 function spawnPlayer()
 {
   player.position = {x: Boundary.width*1.5, y: Boundary.height*1.5};
@@ -189,6 +196,18 @@ function animate()
               score += 10;
               ui_manager.updateScores(score);
               pellets.splice(i, 1);
+
+              //respawn pellet
+              setTimeout(function(){
+
+                pellets.push(new Pellet({
+                    position: {
+                        x: pellet.position.x, 
+                        y: pellet.position.y
+                    }
+                }));
+
+              }, getRandomInt(min_pellets_respawn_time, max_pellets_respawn_time));
           }
       }
 
@@ -254,9 +273,6 @@ function animate()
             else
             {
               c.clearRect(0, 0, window.innerWidth, window.innerHeight);
-
-              /*menu_modal.classList.remove('hidden');
-              scores_container.classList.add('hidden');*/
               ui_manager.death(score);
 
               is_game = false;
