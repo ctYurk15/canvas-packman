@@ -1,6 +1,9 @@
 class Ghost
 {
     static speed = 1.5;
+
+    scores = 100;
+
     constructor({position, velocity, texture, scared_texture})
     {
         this.position = position;

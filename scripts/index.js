@@ -269,6 +269,7 @@ function animate()
             if(ghost.scared)
             {
               ghosts.splice(i, 1);
+              score += ghost.scores;
             }
             else
             {
