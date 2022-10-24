@@ -8,11 +8,13 @@ const menu_modal = document.querySelector("#menuModal");
 const scores_container = document.querySelector(".scores-text");
 const game_over_container = document.querySelector("#gameOverContainer");
 const game_over_scores = document.querySelector("#gameOverScores");
+const high_scores_text = document.querySelector("#highScoresText");
 
 canvas.width = window.innerWidth*1.05;
 canvas.height = window.innerHeight*1.05;
 
 const ui_manager = new UIManager(scoreEl, scores_container, menu_modal, game_over_container, game_over_scores);
+const proggress_tracker = new ProgressTracker(high_scores_text, high_scores_cell_name);
 
 //in-game state
 let pellets = [];
@@ -268,16 +270,18 @@ function animate()
         {
             if(ghost.scared)
             {
-              ghosts.splice(i, 1);
-              score += ghost.scores;
+                ghosts.splice(i, 1);
+                score += ghost.scores;
             }
             else
             {
-              c.clearRect(0, 0, window.innerWidth, window.innerHeight);
-              ui_manager.death(score);
+                //Death
+                c.clearRect(0, 0, window.innerWidth*2, window.innerHeight*2);
+                ui_manager.death(score);
+                proggress_tracker.updateHighscores(score);
 
-              is_game = false;
-              break;
+                is_game = false;
+                break;
             }
         }
 
@@ -434,7 +438,8 @@ window.addEventListener('keyup', function({key}){
     //console.log(keys);
 });
 
-animate()
+animate();
+proggress_tracker.updateUI();
 
 //buttons triggers
 start_game_btn.addEventListener('click', function(event){
