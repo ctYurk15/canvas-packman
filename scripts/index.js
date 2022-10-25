@@ -43,34 +43,22 @@ let score = 0;
 
 function generateGhosts()
 {
-  ghosts = [
+    ghosts = [];
 
-    new Ghost({
-      position: {x: Boundary.width*6 + Boundary.width/2, y: Boundary.height*1.5},
-      velocity: {x: Ghost.speed, y: 0},
-      texture: createImage(texturer.getGhostTexture()),
-      scared_texture: scared_ghost_texture,
-    }),
-    new Ghost({
-      position: {x: Boundary.width*6 + Boundary.width/2, y: Boundary.height*3 + Boundary.height/2},
-      velocity: {x: Ghost.speed, y: 0},
-      texture: createImage(texturer.getGhostTexture()),
-      scared_texture: scared_ghost_texture,
-    }),
-    new Ghost({
-      position: {x: Boundary.width*8 + Boundary.width/2, y: Boundary.height*5 + Boundary.height/2},
-      velocity: {x: Ghost.speed, y: 0},
-      texture: createImage(texturer.getGhostTexture()),
-      scared_texture: scared_ghost_texture,
-    }),
-    new Ghost({
-      position: {x: Boundary.width*8 + Boundary.width/2, y: Boundary.height*9 + Boundary.height/2},
-      velocity: {x: Ghost.speed, y: 0},
-      texture: createImage(texturer.getGhostTexture()),
-      scared_texture: scared_ghost_texture,
-    }),
-
-  ];
+    ghosts_spots.forEach(function(ghost_spot){
+        ghosts.push(new Ghost({
+            position: {
+                x: ghost_spot.position.x,
+                y: ghost_spot.position.y,
+            },
+            velocity: {
+                x: ghost_spot.velocity.x,
+                y: ghost_spot.velocity.y
+            },
+            texture: createImage(texturer.getGhostTexture()),
+            scared_texture: scared_ghost_texture,
+        }));
+    });
 }
 
 function getRandomInt(min, max) 
@@ -82,9 +70,36 @@ function getRandomInt(min, max)
 
 function spawnPlayer()
 {
-  player.position = {x: Boundary.width*1.5, y: Boundary.height*1.5};
-  player.velocity = {x: 0, y: 0};
-  player.rotation = 0;
+    player.position = {x: Boundary.width*1.5, y: Boundary.height*1.5};
+    player.velocity = {x: 0, y: 0};
+    player.rotation = 0;
+}
+
+function spawnNewGhost()
+{
+    //pick-up ghost spot
+    const new_ghost_spot = ghosts_spots[getRandomInt(0, ghosts_spots.length)];
+
+    //picking time
+    const time_to_new_ghost = getRandomInt(min_ghosts_respawn_time, max_ghosts_respawn_time);
+
+    setInterval(function(){
+
+        ghosts.push(new Ghost({
+            position: {
+                x: new_ghost_spot.position.x,
+                y: new_ghost_spot.position.y,
+            },
+            velocity: {
+                x: new_ghost_spot.velocity.x,
+                y: new_ghost_spot.velocity.y
+            },
+            texture: createImage(texturer.getGhostTexture()),
+            scared_texture: scared_ghost_texture,
+        }));
+
+    }, time_to_new_ghost);
+    
 }
 
 function circleCollideWithRectangle({circle, rectangle})
@@ -236,13 +251,6 @@ function animate()
           }
       }
 
-      //win condition
-      if(pellets.length == 0)
-      {
-          alert('You won!');
-          cancelAnimationFrame(animation_id);
-      }
-
       boundaries.forEach(function(boundary){
           boundary.draw();
 
@@ -270,8 +278,11 @@ function animate()
         {
             if(ghost.scared)
             {
+                //ghost death
                 ghosts.splice(i, 1);
                 score += ghost.scores;
+
+                spawnNewGhost();
             }
             else
             {
@@ -443,14 +454,18 @@ proggress_tracker.updateUI();
 
 //buttons triggers
 start_game_btn.addEventListener('click', function(event){
-  is_game = true;
-  score = 0;
-  ui_manager.updateScores(score);
+    is_game = true;
+    score = 0;
+    ui_manager.updateScores(score);
 
-  map.parse(boundaries, pellets, powerUps);
-  generateGhosts();
-  spawnPlayer();
-  
-  menu_modal.classList.add('hidden');
-  scores_container.classList.remove('hidden');
+    boundaries = [];
+    pellets = [];
+    powerUps = [];
+
+    map.parse(boundaries, pellets, powerUps);
+    generateGhosts();
+    spawnPlayer();
+
+    menu_modal.classList.add('hidden');
+    scores_container.classList.remove('hidden');
 });

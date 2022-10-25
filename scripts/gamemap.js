@@ -25,4 +25,40 @@ const gamemap = [
     ['|', '.', '.', '.', '.', '.', '.', '.', '.', '.', '|', '.', '.', '.', '.', '.', '.', '.', '.', '.', '|',],
     ['4', '-', '-', '-', '-', '-', '-', '-', '-', '-', '5', '-', '-', '-', '-', '-', '-', '-', '-', '-', '3',],
 ];
+
+const ghosts_spots = [
+    {
+        position: {x: Boundary.width*9 + Boundary.width/2, y: Boundary.height*10 + Boundary.height/2},
+        velocity: {x: 0, y: -Ghost.speed},
+    },
+    {
+        position: {x: Boundary.width*8 + Boundary.width/2, y: Boundary.height*11 + Boundary.height/2},
+        velocity: {x: -Ghost.speed, y: 0},
+    },
+    {
+        position: {x: Boundary.width*11 + Boundary.width/2, y: Boundary.height*10 + Boundary.height/2},
+        velocity: {x: 0, y: -Ghost.speed},
+    },
+    {
+        position: {x: Boundary.width*12 + Boundary.width/2, y: Boundary.height*11 + Boundary.height/2},
+        velocity: {x: Ghost.speed, y: 0},
+    },
+    {
+        position: {x: Boundary.width*12 + Boundary.width/2, y: Boundary.height*13 + Boundary.height/2},
+        velocity: {x: Ghost.speed, y: 0},
+    },
+    {
+        position: {x: Boundary.width*11 + Boundary.width/2, y: Boundary.height*14 + Boundary.height/2},
+        velocity: {x: 0, y: Ghost.speed},
+    },
+    {
+        position: {x: Boundary.width*8 + Boundary.width/2, y: Boundary.height*13 + Boundary.height/2},
+        velocity: {x: -Ghost.speed, y: 0},
+    },
+    {
+        position: {x: Boundary.width*9 + Boundary.width/2, y: Boundary.height*14 + Boundary.height/2},
+        velocity: {x: 0, y: -Ghost.speed},
+    },
+];
+
 const map = new Map(gamemap, texturer);

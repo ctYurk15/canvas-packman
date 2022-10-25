@@ -1,8 +1,9 @@
 class Ghost
 {
-    static speed = 1.5;
+    static speed = 2;
 
     scores = 100;
+    speed = 2;
 
     constructor({position, velocity, texture, scared_texture})
     {
@@ -11,7 +12,6 @@ class Ghost
         this.texture = texture;
         this.scared_texture = scared_texture;
         this.radius = 15;
-        this.speed = 1.5;
         this.scared = false;
         this.prevCollisions = [];
     }
